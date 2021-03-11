@@ -1,7 +1,5 @@
 syntax = "proto3";
-option go_package = "pkg/grpcmodel";
-
-package grpcmodel;
+option go_package = "pkg/portstore";
 
 import "google/protobuf/empty.proto";
 
@@ -26,7 +24,7 @@ message OptionalPortResp {
     optional PortResp resp = 1;
 }
 
-service PortService {
+service PortStore {
     rpc PersistPorts(stream PortReq) returns (google.protobuf.Empty) {}
     rpc GetPort(PortReq) returns (OptionalPortResp) {}
 }

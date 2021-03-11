@@ -1,5 +1,8 @@
-run-local:
-	go run cmd/clientapi/restapi.go
+run-local-restapi:
+	go run cmd/restapi/restapi.go
+
+run-local-store:
+	go run cmd/store/store.go
 
 post-all:
 	curl -X POST -i localhost:8080/ports -H "Content-Type: application/json" --data-binary "@smallports.json"
