@@ -8,7 +8,7 @@ message PortReq {
 }
 
 message OptionalPortResp {
-    message PortResp {
+    message Port {
         string          id          = 1;
         string          name        = 2;
         repeated float  coordinates = 3;
@@ -21,10 +21,10 @@ message OptionalPortResp {
         repeated string unlocs      = 10;
         string          code        = 11;
     }
-    optional PortResp resp = 1;
+    optional Port resp = 1;
 }
 
 service PortStore {
-    rpc PersistPorts(stream PortReq) returns (google.protobuf.Empty) {}
+    rpc PersistPorts(stream OptionalPortResp.Port) returns (google.protobuf.Empty) {}
     rpc GetPort(PortReq) returns (OptionalPortResp) {}
 }

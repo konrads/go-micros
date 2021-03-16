@@ -10,8 +10,8 @@ type DB struct {
 	ports map[string]model.Port
 }
 
-func New() DB {
-	return DB{ports: make(map[string]model.Port)}
+func New() *DB {
+	return &DB{ports: make(map[string]model.Port)}
 }
 
 func (db *DB) Get(id string) (*model.Port, error) {
