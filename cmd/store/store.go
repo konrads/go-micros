@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"log"
 
+	"github.com/konrads/go-micros/pkg/db"
 	"github.com/konrads/go-micros/pkg/portstore"
 )
 
 func main() {
-	serverPort := 9000 // FIXME: get via command line params
-	address := fmt.Sprintf("localhost:%v", serverPort)
-	if err := portstore.RunPortServer(address); err != nil {
+	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
+	// dbUri = flag.String("postgres-uri", "postgresql://localhost/store", "postgres uri for store db")
+
+	db := db.New()
+	if err := portstore.RunPortServer(*storeGrpcUri, db); err != nil {
 		log.Fatalf("Failed to Serve grpc on, err: %v", err)
 	}
 }

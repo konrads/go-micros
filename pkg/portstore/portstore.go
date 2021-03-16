@@ -86,8 +86,8 @@ func (ps *PortStoreServerImpl) GetPort(ctx context.Context, portReq *PortReq) (*
 	return &protoMaybePort, err
 }
 
-func RunPortServer(address string) error {
-	s := &PortStoreServerImpl{db: db.New(), grpcServer: grpc.NewServer(), address: address}
+func RunPortServer(address string, db *db.DB) error {
+	s := &PortStoreServerImpl{db: db, grpcServer: grpc.NewServer(), address: address}
 	RegisterPortStoreServer(s.grpcServer, s)
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {

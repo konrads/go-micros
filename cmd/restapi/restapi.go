@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
@@ -44,12 +45,13 @@ func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 }
 
 func main() {
-	r := gin.Default()
-	storeClient, err := portstore.NewPortClient("localhost:9000")
+	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
+	storeClient, err := portstore.NewPortClient(*storeGrpcUri)
 	if err != nil {
 		log.Fatalf("Failed to open gprc store due to %v", err)
 	}
 
+	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
