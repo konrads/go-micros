@@ -138,11 +138,11 @@ func (ps *PortStoreClientImpl) GetPort(id string) (*model.Port, error) {
 	client := NewPortStoreClient(ps.conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	protoMaybePort, err := client.GetPort(ctx, &PortReq{PortId: id})
+	optProtoPort, err := client.GetPort(ctx, &PortReq{PortId: id})
 	if err != nil {
 		return nil, err
 	} else {
-		protoPort := protoMaybePort.GetResp()
+		protoPort := optProtoPort.GetResp()
 		if protoPort == nil {
 			return nil, fmt.Errorf("Failed to find the port for id %v", id)
 		} else {

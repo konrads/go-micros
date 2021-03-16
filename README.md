@@ -3,6 +3,7 @@ Go microservice playground
 
 Bunch of Go microservices utilizing:
 * Gin for REST
+* gRPC for inter-service communications
 
 Setup
 -----

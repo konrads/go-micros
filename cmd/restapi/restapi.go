@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/bcicen/jstream"
 	"github.com/gin-gonic/gin"
@@ -33,12 +34,12 @@ func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		log.Printf("Fetching port for id: %v", id)
-		// port, error := db.Get(id)
-		// if error == nil {
-		// 	c.JSON(http.StatusOK, port.ToPortReq())
-		// } else {
-		// 	c.Status(http.StatusNotFound)
-		// }
+		port, error := portStore.GetPort(id)
+		if error == nil {
+			c.JSON(http.StatusOK, port.ToPortReq())
+		} else {
+			c.Status(http.StatusNotFound)
+		}
 	}
 }
 
