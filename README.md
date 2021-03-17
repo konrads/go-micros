@@ -47,5 +47,5 @@ make test
 TODOs
 -----
 * testing of microservices...?
-* fix martialing of streamed REST to structs, currently done manually, ie. [PortReqFromJson() from PortReqFromJson.go](pkg/model/model.go)
+* fix marshaling of streamed REST to structs, currently done manually, ie. [PortReqFromJson() from PortReqFromJson.go](pkg/model/model.go)
 * consider DB resultset marshalling to structs (ORM?), ie. [postgres.go](pkg/db/postgres.go)
