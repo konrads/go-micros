@@ -23,16 +23,12 @@ get-bogus:
 
 .PHONY: test
 test:
-	for p in $(shell go list ./...); do \
-		go test -v $$p; \
-	done
+	go test ./... -v
 
-.PHONY: fmt
+vet:
+	go vet ./...
+
 fmt:
 	for f in $(shell find . -name "*.go"); do \
 		gofmt -w $$f; \
 	done
-
-.PHONY: vet
-vet:
-	go vet $(shell go list ./...)

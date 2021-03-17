@@ -5,5 +5,5 @@ go:
   - 1.16
 
 script:
-  - make vet
-  - make test
+  - go vet ./...
+  - go test ./... -v
