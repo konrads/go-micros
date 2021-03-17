@@ -1,17 +1,16 @@
 Go microservice playground
 ==========================
-
-Bunch of Go microservices utilizing:
-* Gin for REST
-* gRPC for inter-service communications
-* persistance flavours:
+Microservice setup comprising:
+* Gin restapi for RESTAPI gateway, accepts streamed [smallports.json](smallports.json) data
+* STORE service, backed by either:
   * memory (ephemeral)
   * postgres
+RESTAPI and STORE talk to each other via gRPC
 
 Dev setup
 ---------
 ```
-brew install --build-from-source protobuf
+brew install --build-from-source protobuf  # for mac
 go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 protoc --go_out=plugins=grpc:. pkg/portstore/portstore.proto
 ```
@@ -21,7 +20,7 @@ To run locally
 ```
 make run-local-restapi &
 make run-local-mem-store &
-# or make run-local-postgres-store &
+# or make run-local-postgres-store &, ensuring postgres is up and bootstrapped as per docker/postgres/Dockerfile and docker/postgres/init.sql
 ```
 
 To run via docker-compose
@@ -41,4 +40,4 @@ TODOs
 -----
 * testing of microservices...?
 * fix martialing of streamed REST to structs, currently done manually, ie. [PortReqFromJson() from PortReqFromJson.go](pkg/model/model.go)
-* consider ORM for mapping to structs, ie. [postgres.go](pkg/db/postgres.go)
+* consider DB resultset marshalling to structs (ORM?), ie. [postgres.go](pkg/db/postgres.go)
