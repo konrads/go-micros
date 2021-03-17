@@ -36,6 +36,12 @@ make post-all get-existing get-bogus
 # should get a 204 for POST, 200 for existing, 204 for bogus
 ```
 
+To unit test
+------------
+```
+make test
+```
+
 TODOs
 -----
 * testing of microservices...?

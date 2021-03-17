@@ -20,3 +20,19 @@ get-existing:
 
 get-bogus:
 	curl -X GET -i localhost:8080/port/__BOGUS__
+
+.PHONY: test
+test:
+	for p in $(shell go list ./...); do \
+		go test -v $$p; \
+	done
+
+.PHONY: fmt
+fmt:
+	for f in $(shell find . -name "*.go"); do \
+		gofmt -w $$f; \
+	done
+
+.PHONY: vet
+vet:
+	go vet $(shell go list ./...)
