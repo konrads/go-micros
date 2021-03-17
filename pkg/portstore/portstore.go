@@ -65,7 +65,7 @@ func (ps *PortStoreServerImpl) PersistPorts(stream PortStore_PersistPortsServer)
 		} else {
 			port := portBuff.ToModel()
 			log.Printf("Persisting port... %v", port)
-			_, dbErr := ps.db.SaveAll([]model.Port{*port})
+			_, dbErr := (*ps.db).SaveAll([]model.Port{*port})
 			if dbErr != nil {
 				return dbErr
 			}
@@ -77,7 +77,7 @@ func (ps *PortStoreServerImpl) PersistPorts(stream PortStore_PersistPortsServer)
 // part of PortStoreServer interface
 func (ps *PortStoreServerImpl) GetPort(ctx context.Context, portReq *PortReq) (*OptionalPortResp, error) {
 	log.Printf("...getting: %v", portReq)
-	port, err := ps.db.Get(portReq.PortId)
+	port, err := (*ps.db).Get(portReq.PortId)
 	if err != nil {
 		return nil, err
 	}
@@ -103,11 +103,8 @@ type PortStoreClientImpl struct {
 	conn *grpc.ClientConn
 }
 
-func NewPortClient(serverAddress string) (*PortStoreClientImpl, error) {
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithBlock())    // FIXME: revisit
-	opts = append(opts, grpc.WithInsecure()) // FIXME: revisit
-	conn, err := grpc.Dial(serverAddress, opts...)
+func NewPortClient(grpcUri string) (*PortStoreClientImpl, error) {
+	conn, err := grpc.Dial(grpcUri, grpc.WithBlock(), grpc.WithInsecure()) // awaits the connection, no transport security (eg. TLS/SSL)
 	if err != nil {
 		return nil, err
 	} else {
@@ -115,20 +112,23 @@ func NewPortClient(serverAddress string) (*PortStoreClientImpl, error) {
 	}
 }
 
-func (ps *PortStoreClientImpl) GetPortPersistor() (func(port model.Port) error /*processor*/, func() /*cleanup*/, error) {
+type processor func(port model.Port) error
+type cleanup func()
+
+func (ps *PortStoreClientImpl) GetPortPersistor() (processor, cleanup, error) {
 	client := NewPortStoreClient(ps.conn)
-	// FIXME: understand context...
-	ctx, _ := context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, ctxCancel := context.WithTimeout(context.Background(), 100*time.Second)
 	if stream, err := client.PersistPorts(ctx); err != nil {
 		return nil, nil, err
 	} else {
 		processor := func(p model.Port) error {
-			log.Printf("Sending via grpc... %v", p)
+			log.Printf("gRPC send: %v", p)
 			return stream.Send(ToProtobuff(&p))
 		}
 		cleanup := func() {
-			log.Printf("Grpc cleanup...")
-			defer stream.CloseSend()
+			log.Printf("gRPC cleanup...")
+			stream.CloseSend()
+			_ = ctxCancel // not running ctxCancel() due to status switching to Canceled prematurely, as per: https://github.com/grpc/grpc-go/issues/1099
 		}
 		return processor, cleanup, nil
 	}

@@ -13,6 +13,7 @@ import (
 
 func PostPorts(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		defer c.Request.Body.Close()
 		processor, cleanup, err := portStore.GetPortPersistor()
 		defer cleanup()
 		if err != nil {

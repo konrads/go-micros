@@ -26,3 +26,9 @@ To manual test
 make post-all get-existing get-bogus
 # should get a 204 for POST, 200 for existing, 204 for bogus
 ```
+
+TODOs
+-----
+* testing of microservices...?
+* REST json stream to structs done manually
+* add dockerfiles, docker-compose
