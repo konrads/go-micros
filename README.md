@@ -3,14 +3,14 @@ Go microservice playground
 Build status (master): [![Build Status](https://travis-ci.org/konrads/go-micros.svg?branch=master)](https://travis-ci.org/konrads/go-micros)
 
 Microservice setup comprising:
-* Gin restapi for RESTAPI gateway, accepts streamed [sample-ports.json](sample-ports.json) data
+* Gin for RESTAPI gateway, accepts streamed [sample-ports.json](sample-ports.json) data, queries by Id
 * STORE service, backed by either:
   * memory (ephemeral)
   * postgres
-RESTAPI and STORE talk to each other via gRPC
+RESTAPI and STORE communicate via gRPC
 
-Dev setup
----------
+Dev setup (needed if [portstore.proto](pkg/portstore/portstore.proto) is changed)
+---------------------------------------------------------------------------------
 ```
 brew install --build-from-source protobuf  # for mac
 go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
@@ -41,7 +41,7 @@ make post-all get-existing get-bogus
 To unit test
 ------------
 ```
-make test
+go test ./... -v
 ```
 
 TODOs
