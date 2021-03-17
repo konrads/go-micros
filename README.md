@@ -40,5 +40,5 @@ make post-all get-existing get-bogus
 TODOs
 -----
 * testing of microservices...?
-* fix martialing of streamed REST to structs, currently done manually, ie. (PortReqFromJson() from PortReqFromJson.go)[pkg/model.go]
-* consider ORM for mapping to structs, ie. (postgres.go)[pkg/db/postgres.go]
+* fix martialing of streamed REST to structs, currently done manually, ie. [PortReqFromJson() from PortReqFromJson.go](pkg/model/model.go)
+* consider ORM for mapping to structs, ie. [postgres.go](pkg/db/postgres.go)
