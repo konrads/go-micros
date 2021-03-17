@@ -9,3 +9,7 @@ import (
 func TestMemDB(t *testing.T) {
 	assert.Equal(t, 1, 1)
 }
+
+func TestMemDB_fail(t *testing.T) {
+	assert.Equal(t, 1, 2)
+}
