@@ -1,8 +1,6 @@
 package db
 
 import (
-	"fmt"
-
 	"github.com/konrads/go-micros/pkg/model"
 )
 
@@ -15,10 +13,11 @@ func NewMemDB() *MemDB {
 }
 
 func (db *MemDB) Get(id string) (*model.Port, error) {
-	if val, ok := db.ports[id]; ok {
+	val, ok := db.ports[id]
+	if ok {
 		return &val, nil
 	} else {
-		return nil, fmt.Errorf("No port for id: %v", id)
+		return nil, nil
 	}
 }
 
