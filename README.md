@@ -20,8 +20,8 @@ To run locally
 --------------
 ```
 make run-local-restapi &
-make run-mem-local-store &
-# or make run-postgres-local-store &
+make run-local-mem-store &
+# or make run-local-postgres-store &
 ```
 
 To run via docker-compose
@@ -40,4 +40,5 @@ make post-all get-existing get-bogus
 TODOs
 -----
 * testing of microservices...?
-* REST json stream to structs done manually
+* fix martialing of streamed REST to structs, currently done manually, ie. (PortReqFromJson() from PortReqFromJson.go)[pkg/model.go]
+* consider ORM for mapping to structs, ie. (postgres.go)[pkg/db/postgres.go]
