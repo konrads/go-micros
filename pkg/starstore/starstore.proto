@@ -1,0 +1,26 @@
+syntax = "proto3";
+option go_package = "pkg/starstore";
+
+import "google/protobuf/empty.proto";
+
+message StarReq {
+    string starId = 1;
+}
+
+message OptionalStarResp {
+    message Star {
+        string          id                = 1;
+        string          name              = 2;
+        repeated string alias             = 3;
+        string          constellation     = 4;
+        repeated float  coordinates       = 5;
+        float           distance          = 6;
+        float           apparentMagnitude = 7;
+    }
+    optional Star resp = 1;
+}
+
+service StarStore {
+    rpc PersistStars(stream OptionalStarResp.Star) returns (google.protobuf.Empty) {}
+    rpc GetStar(StarReq) returns (OptionalStarResp) {}
+}

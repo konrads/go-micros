@@ -8,38 +8,38 @@ import (
 	"github.com/bcicen/jstream"
 	"github.com/gin-gonic/gin"
 	"github.com/konrads/go-micros/pkg/model"
-	"github.com/konrads/go-micros/pkg/portstore"
+	"github.com/konrads/go-micros/pkg/starstore"
 )
 
-func PostPorts(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
+func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer c.Request.Body.Close()
-		processor, cleanup, err := portStore.GetPortPersistor()
+		processor, cleanup, err := starStore.GetStarPersistor()
 		defer cleanup()
 		if err != nil {
-			log.Fatalf("Failed to get port persistor due to %v", err)
+			log.Fatalf("Failed to get star persistor due to %v", err)
 		}
 
 		decoder := jstream.NewDecoder(c.Request.Body, 1).EmitKV()
 		for mv := range decoder.Stream() {
 			kv := mv.Value.(jstream.KV)
 			asMap := kv.Value.(map[string]interface{})
-			asPortReq := model.PortReqFromJson(asMap)
-			asPort := asPortReq.ToPort(kv.Key)
-			processor(asPort)
-			log.Printf("Processed REST port: %v", asPort)
+			asStarReq := model.StarReqFromJson(asMap)
+			asStar := asStarReq.ToStar(kv.Key)
+			processor(asStar)
+			log.Printf("Processed REST star: %v", asStar)
 		}
 	}
 }
 
-func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
+func GetStar(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		log.Printf("Fetching port for id: %v", id)
-		port, err := portStore.GetPort(id)
+		log.Printf("Fetching star for id: %v", id)
+		star, err := starStore.GetStar(id)
 		if err == nil {
-			c.JSON(http.StatusOK, port.ToPortReq())
-		} else if port == nil {
+			c.JSON(http.StatusOK, star.ToStarReq())
+		} else if star == nil {
 			c.Status(http.StatusNotFound)
 		} else {
 			c.JSON(http.StatusInternalServerError, err)
@@ -49,7 +49,7 @@ func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 
 func main() {
 	restUri := flag.String("rest-uri", "0.0.0.0:8080", "rest uri")
-	storeGrpcUri := flag.String("store-grpc-uri", "", "port service grpc uri")
+	storeGrpcUri := flag.String("store-grpc-uri", "", "star service grpc uri")
 	flag.Parse()
 
 	log.Printf(`Starting restapi service with params:
@@ -57,9 +57,9 @@ func main() {
 	- storeGrpcUri: %s
 	`, *restUri, *storeGrpcUri)
 
-	storeClient, err := portstore.NewPortClient(*storeGrpcUri)
+	storeClient, err := starstore.NewStarClient(*storeGrpcUri)
 	if err != nil {
-		log.Fatalf("Failed to open gprc store due to %v", err)
+		log.Fatalf("Failed to open gprc star due to %v", err)
 	}
 
 	r := gin.Default()
@@ -68,8 +68,8 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.GET("/port/:id", GetPort(storeClient))
-	r.POST("/ports", PostPorts(storeClient))
+	r.GET("/star/:id", GetStar(storeClient))
+	r.POST("/stars", PostStars(storeClient))
 
 	r.Run(*restUri)
 }

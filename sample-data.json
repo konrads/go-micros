@@ -1,0 +1,58 @@
+{
+  "sun": {
+    "name": "Sun",
+    "alias": ["Sol", "Helios"],
+    "constellation": null,
+    "coordinates": [],
+    "distance": 0,
+    "apparentMagnitude": -26.74
+  },
+  "deneb": {
+    "name": "Deneb",
+    "alias": [],
+    "constellation": "Cygnus",
+    "coordinates": [204125.9, 4516.49],
+    "distance": 2615,
+    "apparentMagnitude": 1.25
+  },
+  "sirius": {
+    "name": "Sirius",
+    "alias": [],
+    "constellation": "Canis Major",
+    "coordinates": [64508.91728, -164258.0171],
+    "distance": 8.6,
+    "apparentMagnitude": 8.44
+  },
+  "betelgeuse": {
+    "name": "Betelgeuse",
+    "alias": [],
+    "constellation": "Orion",
+    "coordinates": [55510.30536, -72425.4304],
+    "distance": 548,
+    "apparentMagnitude": -5.85
+  },
+  "antares": {
+    "name": "Antares",
+    "alias": ["Alpha Scorpi"],
+    "constellation": "Scorpius",
+    "coordinates": [162924.45970, -262555.2094],
+    "distance": 550,
+    "apparentMagnitude": 0.6
+  },
+  "canopus": {
+    "name": "Canopus",
+    "alias": [],
+    "constellation": "Carina",
+    "coordinates": [62757.10988, -524144.3810],
+    "distance": 310,
+    "apparentMagnitude": 0.74
+  },
+  "proximacenturi": {
+    "name": "Proxima Centuri",
+    "alias": [],
+    "constellation": "Centaurus",
+    "coordinates": [142942.94853, -624046.1631],
+    "distance": 4.2465,
+    "apparentMagnitude": 10.43
+  }
+}  

@@ -10,32 +10,24 @@ import (
 
 func TestMemDB(t *testing.T) {
 	db := db.NewMemDB()
-	db.SaveAll([]model.Port{
+	db.SaveAll([]model.Star{
 		{
-			Id:          "id1",
-			Name:        "name1",
-			Coordinates: []float32{1.1, 2.2},
-			City:        "city1",
-			Province:    "province1",
-			Country:     "country1",
-			Alias:       []string{"alias1"},
-			Regions:     []string{"region1"},
-			Timezone:    "timezone1",
-			Unlocs:      []string{"unloc1"},
-			Code:        "code1",
+			Id:                "id1",
+			Name:              "name1",
+			Alias:             []string{"alias1"},
+			Constellation:     "constellation1",
+			Coordinates:       []float32{1.1, 1.2},
+			Distance:          1.1,
+			ApparentMagnitude: 11.11,
 		},
 		{
-			Id:          "id2",
-			Name:        "name2",
-			Coordinates: []float32{1.1, 2.2},
-			City:        "city2",
-			Province:    "province2",
-			Country:     "country2",
-			Alias:       []string{"alias2"},
-			Regions:     []string{"region2"},
-			Timezone:    "timezone2",
-			Unlocs:      []string{"unloc2"},
-			Code:        "code2",
+			Id:                "id2",
+			Name:              "name2",
+			Alias:             []string{"alias2"},
+			Constellation:     "constellation2",
+			Coordinates:       []float32{2.1, 2.2},
+			Distance:          2.2,
+			ApparentMagnitude: 22.22,
 		},
 	})
 
@@ -45,7 +37,7 @@ func TestMemDB(t *testing.T) {
 
 	res2, err2 := db.Get("id2")
 	assert.Nil(t, err2)
-	assert.Equal(t, "city2", res2.City)
+	assert.Equal(t, "constellation2", res2.Constellation)
 
 	resBogus, errBogus := db.Get("__BOGUS__")
 	assert.Nil(t, errBogus)

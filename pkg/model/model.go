@@ -1,103 +1,74 @@
 package model
 
-type PortReq struct {
-	Name        string    `json:"name"`
-	Coordinates []float32 `json:"coordinates"`
-	City        string    `json:"city"`
-	Province    string    `json:"province"`
-	Country     string    `json:"country"`
-	Alias       []string  `json:"alias"`
-	Regions     []string  `json:"regions"`
-	Timezone    string    `json:"timezone"`
-	Unlocs      []string  `json:"unlocs"`
-	Code        string    `json:"code"`
+type StarReq struct {
+	Name              string    `json:"name"`
+	Alias             []string  `json:"alias"`
+	Constellation     string    `json:"constellation"`
+	Coordinates       []float32 `json:"coordinates"`
+	Distance          float32   `json:"distance"`
+	ApparentMagnitude float32   `json:"apparentMagnitude"`
 }
 
-type Port struct {
-	Id          string
-	Name        string
-	Coordinates []float32
-	City        string
-	Province    string
-	Country     string
-	Alias       []string
-	Regions     []string
-	Timezone    string
-	Unlocs      []string
-	Code        string
+type Star struct {
+	Id                string
+	Name              string
+	Alias             []string
+	Constellation     string
+	Coordinates       []float32
+	Distance          float32
+	ApparentMagnitude float32
 }
-
-// type Ports struct {
-// 	Ports []Port
-// }
 
 type Pong struct {
 	Message string `json:"message"`
 }
 
-func (pr *PortReq) ToPort(id string) Port {
-	return Port{
-		Id:          id,
-		Name:        pr.Name,
-		Coordinates: pr.Coordinates,
-		City:        pr.City,
-		Province:    pr.Province,
-		Country:     pr.Country,
-		Alias:       pr.Alias,
-		Regions:     pr.Regions,
-		Timezone:    pr.Timezone,
-		Unlocs:      pr.Unlocs,
-		Code:        pr.Code,
+func (s *StarReq) ToStar(id string) Star {
+	return Star{
+		Id:                id,
+		Name:              s.Name,
+		Alias:             s.Alias,
+		Constellation:     s.Constellation,
+		Coordinates:       s.Coordinates,
+		Distance:          s.Distance,
+		ApparentMagnitude: s.ApparentMagnitude,
 	}
 }
 
-func (pr *Port) ToPortReq() PortReq {
-	return PortReq{
-		Name:        pr.Name,
-		Coordinates: pr.Coordinates,
-		City:        pr.City,
-		Province:    pr.Province,
-		Country:     pr.Country,
-		Alias:       pr.Alias,
-		Regions:     pr.Regions,
-		Timezone:    pr.Timezone,
-		Unlocs:      pr.Unlocs,
-		Code:        pr.Code,
+func (s *Star) ToStarReq() StarReq {
+	return StarReq{
+		Name:              s.Name,
+		Alias:             s.Alias,
+		Constellation:     s.Constellation,
+		Coordinates:       s.Coordinates,
+		Distance:          s.Distance,
+		ApparentMagnitude: s.ApparentMagnitude,
 	}
 }
 
 // FIXME: another way to parse json to structs?
-func PortReqFromJson(kv map[string]interface{}) PortReq {
-	var name, city, province, country, timezone, code string
+func StarReqFromJson(kv map[string]interface{}) StarReq {
+	var name, constellation string
+	var distance, apparentMagnitude float32
 	if v, ok := kv["name"].(string); ok {
 		name = v
 	}
-	if v, ok := kv["city"].(string); ok {
-		city = v
+	if v, ok := kv["constellation"].(string); ok {
+		constellation = v
 	}
-	if v, ok := kv["province"].(string); ok {
-		province = v
+	if v, ok := kv["distance"].(float64); ok {
+		distance = float32(v)
 	}
-	if v, ok := kv["country"].(string); ok {
-		country = v
+	if v, ok := kv["apparentMagnitude"].(float64); ok {
+		apparentMagnitude = float32(v)
 	}
-	if v, ok := kv["timezone"].(string); ok {
-		timezone = v
-	}
-	if v, ok := kv["code"].(string); ok {
-		code = v
-	}
-	return PortReq{
-		Name:        name,
-		Coordinates: toFloat32Slice(kv["coordinates"].([]interface{})),
-		City:        city,
-		Province:    province,
-		Country:     country,
-		Alias:       toStringSlice(kv["alias"].([]interface{})),
-		Regions:     toStringSlice(kv["regions"].([]interface{})),
-		Timezone:    timezone,
-		Unlocs:      toStringSlice(kv["unlocs"].([]interface{})),
-		Code:        code,
+	return StarReq{
+		Name:              name,
+		Alias:             toStringSlice(kv["alias"].([]interface{})),
+		Constellation:     constellation,
+		Coordinates:       toFloat32Slice(kv["coordinates"].([]interface{})),
+		Distance:          distance,
+		ApparentMagnitude: apparentMagnitude,
 	}
 }
 

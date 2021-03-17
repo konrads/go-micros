@@ -5,15 +5,15 @@ import (
 )
 
 type MemDB struct {
-	ports map[string]model.Port
+	stars map[string]model.Star
 }
 
 func NewMemDB() *MemDB {
-	return &MemDB{ports: make(map[string]model.Port)}
+	return &MemDB{stars: make(map[string]model.Star)}
 }
 
-func (db *MemDB) Get(id string) (*model.Port, error) {
-	val, ok := db.ports[id]
+func (db *MemDB) Get(id string) (*model.Star, error) {
+	val, ok := db.stars[id]
 	if ok {
 		return &val, nil
 	} else {
@@ -21,12 +21,12 @@ func (db *MemDB) Get(id string) (*model.Port, error) {
 	}
 }
 
-func (db *MemDB) SaveAll(ports []model.Port) (int, error) {
-	for _, port := range ports {
-		db.ports[port.Id] = port
+func (db *MemDB) SaveAll(stars []model.Star) (int, error) {
+	for _, star := range stars {
+		db.stars[star.Id] = star
 	}
 
-	return len(ports), nil
+	return len(stars), nil
 }
 
 func (db *MemDB) Close() error {

@@ -5,11 +5,11 @@ import (
 	"log"
 
 	"github.com/konrads/go-micros/pkg/db"
-	"github.com/konrads/go-micros/pkg/portstore"
+	"github.com/konrads/go-micros/pkg/starstore"
 )
 
 func main() {
-	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service gRPC uri")
+	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "star service gRPC uri")
 	storeDbType := flag.String("db-type", "mem", "db type")
 	storeDbUri := flag.String("db-uri", "" /* eg. for postgres: "postgres://gomicros:password@localhost/gomicros?sslmode=disable" */, "db uri")
 	flag.Parse()
@@ -30,7 +30,7 @@ func main() {
 		log.Fatalf("Invalid db-type, choose betweem mem/postgres")
 	}
 	defer dbInst.Close()
-	if err := portstore.RunPortServer(*storeGrpcUri, &dbInst); err != nil {
+	if err := starstore.RunStarServer(*storeGrpcUri, &dbInst); err != nil {
 		log.Fatalf("Failed to Serve grpc on, err: %v", err)
 	}
 }

@@ -5,7 +5,7 @@ import (
 )
 
 type DB interface {
-	Get(id string) (*model.Port, error)
-	SaveAll(ports []model.Port) (int, error)
+	Get(id string) (*model.Star, error)
+	SaveAll(stars []model.Star) (int, error)
 	Close() error
 }

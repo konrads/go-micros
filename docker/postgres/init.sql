@@ -1,14 +1,10 @@
-CREATE TABLE IF NOT EXISTS ports (
-    id          text,
-    name        text,
-    coordinates float[],
-    city        text,
-    province    text,
-    country     text,
-    alias       text[],
-    regions     text[],
-    timezone    text,
-    unlocs      text[],
-    code        text,
+CREATE TABLE IF NOT EXISTS star (
+    id                text,
+    name              text,
+    alias             text[],
+    constellation     text,
+    coordinates       float[],
+    distance          float,
+    apparentMagnitude float,
     CONSTRAINT id_pk PRIMARY KEY(id)
 );

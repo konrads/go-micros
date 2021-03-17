@@ -21,49 +21,41 @@ func NewPostgresDB(connUri *string) *PostgresDB {
 	return &PostgresDB{db: db}
 }
 
-func (db *PostgresDB) Get(id string) (*model.Port, error) {
-	rows := db.db.QueryRow("SELECT name, coordinates, city, province, country, alias, regions, timezone, unlocs, code FROM ports WHERE id = $1", id)
+func (db *PostgresDB) Get(id string) (*model.Star, error) {
+	rows := db.db.QueryRow("SELECT name, alias, constellation, coordinates, distance, apparentMagnitude FROM star WHERE id = $1", id)
 	var name sql.NullString
-	var coordinates []sql.NullFloat64
-	var city sql.NullString
-	var province sql.NullString
-	var country sql.NullString
 	var alias []sql.NullString
-	var regions []sql.NullString
-	var timezone sql.NullString
-	var unlocs []sql.NullString
-	var code sql.NullString
+	var constellation sql.NullString
+	var coordinates []sql.NullFloat64
+	var distance sql.NullFloat64
+	var apparentMagnitude sql.NullFloat64
 
-	err := rows.Scan(&name, pq.Array(&coordinates), &city, &province, &country, pq.Array(&alias), pq.Array(&regions), &timezone, pq.Array(&unlocs), &code)
+	err := rows.Scan(&name, pq.Array(&alias), &constellation, pq.Array(&coordinates), &distance, &apparentMagnitude)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
 		log.Fatalf("Failed to unmarshall postgres row due to %v", err)
 		return nil, err
 	} else {
-		res := model.Port{
-			Id:          id,
-			Name:        name.String,
-			Coordinates: toFloat32Arr(coordinates),
-			City:        city.String,
-			Province:    province.String,
-			Country:     country.String,
-			Alias:       toStringArr(alias),
-			Regions:     toStringArr(regions),
-			Timezone:    timezone.String,
-			Unlocs:      toStringArr(unlocs),
-			Code:        code.String,
+		res := model.Star{
+			Id:                id,
+			Name:              name.String,
+			Alias:             toStringArr(alias),
+			Constellation:     constellation.String,
+			Coordinates:       toFloat32Arr(coordinates),
+			Distance:          float32(distance.Float64),
+			ApparentMagnitude: float32(apparentMagnitude.Float64),
 		}
 		return &res, nil
 	}
 }
 
-func (db *PostgresDB) SaveAll(ports []model.Port) (int, error) {
+func (db *PostgresDB) SaveAll(stars []model.Star) (int, error) {
 	rowsAffected := 0
-	for _, p := range ports {
+	for _, s := range stars {
 		res, err := db.db.Exec(
-			"INSERT INTO ports (id, name, coordinates, city, province, country, alias, regions, timezone, unlocs, code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) ON CONFLICT(id) DO NOTHING",
-			p.Id, p.Name, pq.Array(p.Coordinates), p.City, p.Province, p.Country, pq.Array(p.Alias), pq.Array(p.Regions), p.Timezone, pq.Array(p.Unlocs), p.Code,
+			"INSERT INTO ports (id, name, alias, constellation, coordinates, distance, apparentMagnitude) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(id) DO NOTHING",
+			s.Id, s.Name, pq.Array(s.Alias), s.Constellation, pq.Array(s.Coordinates), s.Distance, s.ApparentMagnitude,
 		)
 		if err != nil {
 			return 0, err
