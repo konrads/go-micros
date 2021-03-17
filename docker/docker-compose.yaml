@@ -1,0 +1,33 @@
+version: '3.8'
+
+networks:
+  gomicros-net:
+    driver: bridge
+
+services:
+  postgres:
+    image: 'gomicros.postgres'
+    networks:
+      - gomicros-net
+
+  store:
+    image: 'gomicros.store'
+    ports:
+      - 9000:9000
+    networks:
+      - gomicros-net
+    depends_on:
+      - postgres
+    entrypoint: bash -c "/store -store-grpc-uri=0.0.0.0:9000 -db-type=postgres -db-uri=postgres://gomicros:password@postgres/gomicros?sslmode=disable"
+
+  clientapi:
+    image: 'gomicros.restapi'
+    ports:
+      - 8080:8080
+    expose:
+      - "8080"
+    networks:
+      - gomicros-net
+    depends_on:
+      - store
+    entrypoint: bash -c "/restapi -rest-uri=0.0.0.0:8080 -store-grpc-uri=store:9000"

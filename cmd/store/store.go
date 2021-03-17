@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
+	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service gRPC uri")
 	storeDbType := flag.String("db-type", "mem", "db type")
 	storeDbUri := flag.String("db-uri", "" /* eg. for postgres: "postgres://gomicros:password@localhost/gomicros?sslmode=disable" */, "db uri")
 	flag.Parse()
@@ -18,7 +18,7 @@ func main() {
 	- storeGrpcUri: %s
 	- storeDbType:  %s
 	`, *storeGrpcUri, *storeDbType)
-	// Note: not printing storeDbUri as it may include sensitive information such as password
+	// Note: not printing storeDbUri in case it contains sensitive information (eg. password)
 
 	var dbInst db.DB
 	switch *storeDbType {

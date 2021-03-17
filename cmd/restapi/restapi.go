@@ -48,12 +48,14 @@ func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 }
 
 func main() {
-	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
+	restUri := flag.String("rest-uri", "0.0.0.0:8080", "rest uri")
+	storeGrpcUri := flag.String("store-grpc-uri", "", "port service grpc uri")
 	flag.Parse()
 
 	log.Printf(`Starting restapi service with params:
+	- restUri:      %s
 	- storeGrpcUri: %s
-	`, *storeGrpcUri)
+	`, *restUri, *storeGrpcUri)
 
 	storeClient, err := portstore.NewPortClient(*storeGrpcUri)
 	if err != nil {
@@ -69,5 +71,5 @@ func main() {
 	r.GET("/port/:id", GetPort(storeClient))
 	r.POST("/ports", PostPorts(storeClient))
 
-	r.Run()
+	r.Run(*restUri)
 }
