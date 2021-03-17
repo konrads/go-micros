@@ -54,7 +54,7 @@ func (db *PostgresDB) SaveAll(stars []model.Star) (int, error) {
 	rowsAffected := 0
 	for _, s := range stars {
 		res, err := db.db.Exec(
-			"INSERT INTO ports (id, name, alias, constellation, coordinates, distance, apparentMagnitude) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(id) DO NOTHING",
+			"INSERT INTO star (id, name, alias, constellation, coordinates, distance, apparentMagnitude) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(id) DO NOTHING",
 			s.Id, s.Name, pq.Array(s.Alias), s.Constellation, pq.Array(s.Coordinates), s.Distance, s.ApparentMagnitude,
 		)
 		if err != nil {
