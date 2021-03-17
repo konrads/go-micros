@@ -3,7 +3,7 @@ Go microservice playground
 Build status (master): [![Build Status](https://travis-ci.org/konrads/go-micros.svg?branch=master)](https://travis-ci.org/konrads/go-micros)
 
 Microservice setup comprising:
-* Gin for RESTAPI gateway, accepts streamed [sample-data.json](sample-data.json) data, queries by Id
+* Gin for RESTAPI gateway, accepts streamed [sample-data.json](sample-data.json) star data, queries star by `id`
 * STORE service, backed by either:
   * memory (ephemeral)
   * postgres
@@ -28,6 +28,9 @@ make run-local-mem-store &
 To run via docker-compose
 -------------------------
 ```
+docker system prune -f
+docker volume prune -f
+make build-dockers
 docker-compose -f docker/docker-compose.yaml up
 ```
 
