@@ -4,6 +4,6 @@ language: go
 go:
   - 1.16
 
-# script:
-#   - make vet
-#   - make test
+script:
+  - make vet
+  - make test
