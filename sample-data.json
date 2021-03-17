@@ -2,7 +2,6 @@
   "sun": {
     "name": "Sun",
     "alias": ["Sol", "Helios"],
-    "constellation": null,
     "coordinates": [],
     "distance": 0,
     "apparentMagnitude": -26.74
