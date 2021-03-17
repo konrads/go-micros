@@ -3,7 +3,7 @@ Go microservice playground
 Build status (master): [![Build Status](https://travis-ci.org/konrads/go-micros.svg?branch=master)](https://travis-ci.org/konrads/go-micros)
 
 Microservice setup comprising:
-* Gin restapi for RESTAPI gateway, accepts streamed [smallports.json](smallports.json) data
+* Gin restapi for RESTAPI gateway, accepts streamed [sample-ports.json](sample-ports.json) data
 * STORE service, backed by either:
   * memory (ephemeral)
   * postgres

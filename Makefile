@@ -13,7 +13,7 @@ run-local-postgres-store:
 	go run cmd/store/store.go -db-type=postgres -db-uri=postgres://gomicros:password@localhost/gomicros?sslmode=disable
 
 post-all:
-	curl -X POST -i localhost:8080/ports -H "Content-Type: application/json" --data-binary "@smallports.json"
+	curl -X POST -i localhost:8080/ports -H "Content-Type: application/json" --data-binary "@sample-ports.json"
 
 get-existing:
 	curl -X GET -i localhost:8080/port/AEAJM
