@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	model "github.com/konrads/go-micros/pkg/model"
+	"github.com/konrads/go-micros/pkg/model"
 )
 
 type MemDB struct {
@@ -28,4 +28,8 @@ func (db *MemDB) SaveAll(ports []model.Port) (int, error) {
 	}
 
 	return len(ports), nil
+}
+
+func (db *MemDB) Close() error {
+	return nil
 }

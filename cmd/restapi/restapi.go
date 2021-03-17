@@ -36,17 +36,25 @@ func GetPort(portStore *portstore.PortStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		log.Printf("Fetching port for id: %v", id)
-		port, error := portStore.GetPort(id)
-		if error == nil {
+		port, err := portStore.GetPort(id)
+		if err == nil {
 			c.JSON(http.StatusOK, port.ToPortReq())
-		} else {
+		} else if port == nil {
 			c.Status(http.StatusNotFound)
+		} else {
+			c.JSON(http.StatusInternalServerError, err)
 		}
 	}
 }
 
 func main() {
 	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
+	flag.Parse()
+
+	log.Printf(`Starting restapi service with params:
+	- storeGrpcUri: %s
+	`, *storeGrpcUri)
+
 	storeClient, err := portstore.NewPortClient(*storeGrpcUri)
 	if err != nil {
 		log.Fatalf("Failed to open gprc store due to %v", err)

@@ -1,10 +1,11 @@
 package db
 
 import (
-	model "github.com/konrads/go-micros/pkg/model"
+	"github.com/konrads/go-micros/pkg/model"
 )
 
 type DB interface {
 	Get(id string) (*model.Port, error)
 	SaveAll(ports []model.Port) (int, error)
+	Close() error
 }

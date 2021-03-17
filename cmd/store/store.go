@@ -11,7 +11,14 @@ import (
 func main() {
 	storeGrpcUri := flag.String("store-grpc-uri", "localhost:9000", "port service grpc uri")
 	storeDbType := flag.String("db-type", "mem", "db type")
-	storeDbUri := flag.String("db-uri", "localhost:5432", "db uri")
+	storeDbUri := flag.String("db-uri", "" /* eg. for postgres: "postgres://gomicros:password@localhost/gomicros?sslmode=disable" */, "db uri")
+	flag.Parse()
+
+	log.Printf(`Starting store service with params:
+	- storeGrpcUri: %s
+	- storeDbType:  %s
+	`, *storeGrpcUri, *storeDbType)
+	// Note: not printing storeDbUri as it may include sensitive information such as password
 
 	var dbInst db.DB
 	switch *storeDbType {
@@ -22,6 +29,7 @@ func main() {
 	default:
 		log.Fatalf("Invalid db-type, choose betweem mem/postgres")
 	}
+	defer dbInst.Close()
 	if err := portstore.RunPortServer(*storeGrpcUri, &dbInst); err != nil {
 		log.Fatalf("Failed to Serve grpc on, err: %v", err)
 	}

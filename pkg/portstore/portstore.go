@@ -64,10 +64,11 @@ func (ps *PortStoreServerImpl) PersistPorts(stream PortStore_PersistPortsServer)
 			break
 		} else {
 			port := portBuff.ToModel()
-			log.Printf("Persisting port... %v", port)
-			_, dbErr := (*ps.db).SaveAll([]model.Port{*port})
-			if dbErr != nil {
-				return dbErr
+			log.Printf("Persisting port... %v", *port)
+			_, err := (*ps.db).SaveAll([]model.Port{*port})
+			if err != nil {
+				log.Fatalf("Failed due to %v", err)
+				return err
 			}
 		}
 	}
@@ -80,10 +81,13 @@ func (ps *PortStoreServerImpl) GetPort(ctx context.Context, portReq *PortReq) (*
 	port, err := (*ps.db).Get(portReq.PortId)
 	if err != nil {
 		return nil, err
+	} else if port == nil {
+		return &OptionalPortResp{Resp: nil}, nil
+	} else {
+		protoPort := ToProtobuff(port)
+		protoOptPort := OptionalPortResp{Resp: protoPort}
+		return &protoOptPort, err
 	}
-	protoPort := ToProtobuff(port)
-	protoMaybePort := OptionalPortResp{Resp: protoPort}
-	return &protoMaybePort, err
 }
 
 func RunPortServer(address string, db *db.DB) error {

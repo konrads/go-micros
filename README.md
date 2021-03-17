@@ -4,6 +4,7 @@ Go microservice playground
 Bunch of Go microservices utilizing:
 * Gin for REST
 * gRPC for inter-service communications
+* memory (ephemeral) or postgres for persistence
 
 Setup
 -----
@@ -17,7 +18,7 @@ To run
 ------
 ```
 make run-local-restapi &
-make run-local-store &
+make run-mem-local-store &  # or run-postgres-local-store &
 ```
 
 To manual test
