@@ -51,17 +51,16 @@ func (ss *StarStoreServerImpl) PersistStars(stream StarStore_PersistStarsServer)
 		if err == io.EOF {
 			log.Printf("gRPC EOF, for now...")
 			break
-		} else if err != nil {
+		}
+		if err != nil {
 			log.Printf("failed to fetch a star due to %v", err)
 			break
-		} else {
-			star := starBuff.ToModel()
-			log.Printf("persisting star... %v", *star)
-			_, err := (*ss.db).SaveAll([]model.Star{*star})
-			if err != nil {
-				log.Fatalf("failed due to %v", err)
-				return err
-			}
+		}
+		star := starBuff.ToModel()
+		log.Printf("persisting star... %v", *star)
+		if _, err := (*ss.db).SaveAll([]model.Star{*star}); err != nil {
+			log.Fatalf("failed due to %v", err)
+			return err
 		}
 	}
 	return nil
@@ -73,13 +72,13 @@ func (ss *StarStoreServerImpl) GetStar(ctx context.Context, starReq *StarReq) (*
 	star, err := (*ss.db).Get(starReq.StarId)
 	if err != nil {
 		return nil, err
-	} else if star == nil {
-		return &OptionalStarResp{Resp: nil}, nil
-	} else {
-		protoStar := ToProtobuff(star)
-		protoOptStar := OptionalStarResp{Resp: protoStar}
-		return &protoOptStar, err
 	}
+	if star == nil {
+		return &OptionalStarResp{Resp: nil}, nil
+	}
+	protoStar := ToProtobuff(star)
+	protoOptStar := OptionalStarResp{Resp: protoStar}
+	return &protoOptStar, err
 }
 
 func RunStarServer(address string, db *db.DB) error {
@@ -89,9 +88,8 @@ func RunStarServer(address string, db *db.DB) error {
 	if err != nil {
 		log.Printf("star store listen error: %v", err)
 		return err
-	} else {
-		return s.grpcServer.Serve(listener)
 	}
+	return s.grpcServer.Serve(listener)
 }
 
 // Client
@@ -103,9 +101,8 @@ func NewStarClient(grpcUri string) (*StarStoreClientImpl, error) {
 	conn, err := grpc.Dial(grpcUri, grpc.WithBlock(), grpc.WithInsecure()) // awaits the connection, no transport security (eg. TLS/SSL)
 	if err != nil {
 		return nil, err
-	} else {
-		return &StarStoreClientImpl{conn}, nil
 	}
+	return &StarStoreClientImpl{conn}, nil
 }
 
 type processor func(model.Star) error
@@ -114,20 +111,20 @@ type cleanup func()
 func (ss *StarStoreClientImpl) GetStarPersistor() (processor, cleanup, error) {
 	client := NewStarStoreClient(ss.conn)
 	ctx, ctxCancel := context.WithTimeout(context.Background(), 100*time.Second)
-	if stream, err := client.PersistStars(ctx); err != nil {
+	stream, err := client.PersistStars(ctx)
+	if err != nil {
 		return nil, nil, err
-	} else {
-		processor := func(p model.Star) error {
-			log.Printf("gRPC send: %v", p)
-			return stream.Send(ToProtobuff(&p))
-		}
-		cleanup := func() {
-			log.Printf("gRPC cleanup...")
-			stream.CloseSend()
-			_ = ctxCancel // not running ctxCancel() due to status switching to Canceled prematurely, as per: https://github.com/grpc/grpc-go/issues/1099
-		}
-		return processor, cleanup, nil
 	}
+	processor := func(p model.Star) error {
+		log.Printf("gRPC send: %v", p)
+		return stream.Send(ToProtobuff(&p))
+	}
+	cleanup := func() {
+		log.Printf("gRPC cleanup...")
+		stream.CloseSend()
+		_ = ctxCancel // not running ctxCancel() due to status switching to Canceled prematurely, as per: https://github.com/grpc/grpc-go/issues/1099
+	}
+	return processor, cleanup, nil
 }
 
 func (ss *StarStoreClientImpl) GetStar(id string) (*model.Star, error) {
@@ -137,12 +134,10 @@ func (ss *StarStoreClientImpl) GetStar(id string) (*model.Star, error) {
 	optProtoStar, err := client.GetStar(ctx, &StarReq{StarId: id})
 	if err != nil {
 		return nil, err
-	} else {
-		protoStar := optProtoStar.GetResp()
-		if protoStar == nil {
-			return nil, fmt.Errorf("failed to find the star for id %v", id)
-		} else {
-			return protoStar.ToModel(), nil
-		}
 	}
+	protoStar := optProtoStar.GetResp()
+	if protoStar == nil {
+		return nil, fmt.Errorf("failed to find the star for id %v", id)
+	}
+	return protoStar.ToModel(), nil
 }

@@ -35,13 +35,13 @@ func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 			token, err := decoder.Token()
 			k := token.(string)
 			v := model.DefaultStarReq()
-			err = decoder.Decode(&v)
+			err = decoder.Decode(v)
 			if err != nil {
 				log.Fatalf("failed to decode due to: %v", err)
 			}
-			err = validate.Struct(&v)
-			if err != nil {
-				log.Fatalf("failed to validate due to: %v", err)
+			valErr := validate.Struct(v)
+			if valErr != nil {
+				log.Fatalf("failed to validate due to: %v", valErr)
 			}
 			star := v.ToStar(k)
 			processor(star)

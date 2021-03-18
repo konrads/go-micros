@@ -16,16 +16,14 @@ func (db *MemDB) Get(id string) (*model.Star, error) {
 	val, ok := db.stars[id]
 	if ok {
 		return &val, nil
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 func (db *MemDB) SaveAll(stars []model.Star) (int, error) {
 	for _, star := range stars {
 		db.stars[star.ID] = star
 	}
-
 	return len(stars), nil
 }
 

@@ -20,7 +20,7 @@ services:
       - postgres
     entrypoint: bash -c "/store -store-grpc-uri=0.0.0.0:9000 -db-type=postgres -db-uri=postgres://gomicros:password@postgres/gomicros?sslmode=disable"
 
-  clientapi:
+  restapi:
     image: 'gomicros.restapi'
     ports:
       - 8080:8080

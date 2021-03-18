@@ -33,21 +33,21 @@ func (db *PostgresDB) Get(id string) (*model.Star, error) {
 	err := rows.Scan(&name, pq.Array(&alias), &constellation, pq.Array(&coordinates), &distance, &apparentMagnitude)
 	if err == sql.ErrNoRows {
 		return nil, nil
-	} else if err != nil {
+	}
+	if err != nil {
 		log.Fatalf("failed to unmarshall postgres row due to %v", err)
 		return nil, err
-	} else {
-		res := model.Star{
-			ID:                id,
-			Name:              name.String,
-			Alias:             toStringArr(alias),
-			Constellation:     constellation.String,
-			Coordinates:       toFloat32Arr(coordinates),
-			Distance:          float32(distance.Float64),
-			ApparentMagnitude: float32(apparentMagnitude.Float64),
-		}
-		return &res, nil
 	}
+	res := model.Star{
+		ID:                id,
+		Name:              name.String,
+		Alias:             toStringArr(alias),
+		Constellation:     constellation.String,
+		Coordinates:       toFloat32Arr(coordinates),
+		Distance:          float32(distance.Float64),
+		ApparentMagnitude: float32(apparentMagnitude.Float64),
+	}
+	return &res, nil
 }
 
 func (db *PostgresDB) SaveAll(stars []model.Star) (int, error) {
