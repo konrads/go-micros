@@ -12,7 +12,7 @@ func TestMemDB(t *testing.T) {
 	db := db.NewMemDB()
 	db.SaveAll([]model.Star{
 		{
-			Id:                "id1",
+			ID:                "id1",
 			Name:              "name1",
 			Alias:             []string{"alias1"},
 			Constellation:     "constellation1",
@@ -21,7 +21,7 @@ func TestMemDB(t *testing.T) {
 			ApparentMagnitude: 11.11,
 		},
 		{
-			Id:                "id2",
+			ID:                "id2",
 			Name:              "name2",
 			Alias:             []string{"alias2"},
 			Constellation:     "constellation2",

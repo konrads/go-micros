@@ -15,7 +15,7 @@ import (
 
 func ToProtobuff(s *model.Star) *OptionalStarResp_Star {
 	return &OptionalStarResp_Star{
-		Id:                s.Id,
+		Id:                s.ID,
 		Name:              s.Name,
 		Alias:             s.Alias,
 		Constellation:     s.Constellation,
@@ -27,7 +27,7 @@ func ToProtobuff(s *model.Star) *OptionalStarResp_Star {
 
 func (s *OptionalStarResp_Star) ToModel() *model.Star {
 	return &model.Star{
-		Id:                s.Id,
+		ID:                s.Id,
 		Name:              s.Name,
 		Alias:             s.Alias,
 		Constellation:     s.Constellation,
@@ -49,17 +49,17 @@ func (ss *StarStoreServerImpl) PersistStars(stream StarStore_PersistStarsServer)
 	for {
 		starBuff, err := stream.Recv()
 		if err == io.EOF {
-			log.Printf("Grpc EOF, for now...")
+			log.Printf("gRPC EOF, for now...")
 			break
 		} else if err != nil {
-			log.Printf("Failed to fetch a star due to %v", err)
+			log.Printf("failed to fetch a star due to %v", err)
 			break
 		} else {
 			star := starBuff.ToModel()
-			log.Printf("Persisting star... %v", *star)
+			log.Printf("persisting star... %v", *star)
 			_, err := (*ss.db).SaveAll([]model.Star{*star})
 			if err != nil {
-				log.Fatalf("Failed due to %v", err)
+				log.Fatalf("failed due to %v", err)
 				return err
 			}
 		}
@@ -87,7 +87,7 @@ func RunStarServer(address string, db *db.DB) error {
 	RegisterStarStoreServer(s.grpcServer, s)
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
-		log.Printf("Star store listen error: %v", err)
+		log.Printf("star store listen error: %v", err)
 		return err
 	} else {
 		return s.grpcServer.Serve(listener)
@@ -140,7 +140,7 @@ func (ss *StarStoreClientImpl) GetStar(id string) (*model.Star, error) {
 	} else {
 		protoStar := optProtoStar.GetResp()
 		if protoStar == nil {
-			return nil, fmt.Errorf("Failed to find the star for id %v", id)
+			return nil, fmt.Errorf("failed to find the star for id %v", id)
 		} else {
 			return protoStar.ToModel(), nil
 		}

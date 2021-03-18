@@ -18,16 +18,16 @@ func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 		processor, cleanup, err := starStore.GetStarPersistor()
 		defer cleanup()
 		if err != nil {
-			log.Fatalf("Failed to get star persistor due to %v", err)
+			log.Fatalf("failed to get star persistor due to %v", err)
 		}
 
 		decoder := json.NewDecoder(c.Request.Body)
 		token, err := decoder.Token()
 		if err != nil {
-			log.Fatalf("Failed to tokenize json stream due to: %v", err)
+			log.Fatalf("failed to tokenize json stream due to: %v", err)
 		}
 		if delim, ok := token.(json.Delim); !ok || delim != '{' {
-			log.Fatal("Failed to get `{`...")
+			log.Fatal("failed to get `{`...")
 		}
 
 		validate := validator.New()
@@ -37,15 +37,15 @@ func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 			v := model.DefaultStarReq()
 			err = decoder.Decode(&v)
 			if err != nil {
-				log.Fatalf("Failed to decode due to: %v", err)
+				log.Fatalf("failed to decode due to: %v", err)
 			}
 			err = validate.Struct(&v)
 			if err != nil {
-				log.Fatalf("Failed to validate due to: %v", err)
+				log.Fatalf("failed to validate due to: %v", err)
 			}
 			star := v.ToStar(k)
 			processor(star)
-			log.Printf("Processed REST star: %v", star)
+			log.Printf("processed REST star: %v", star)
 		}
 	}
 }
@@ -53,7 +53,7 @@ func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 func GetStar(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
-		log.Printf("Fetching star for id: %v", id)
+		log.Printf("fetching star for id: %v", id)
 		star, err := starStore.GetStar(id)
 		if err == nil {
 			c.JSON(http.StatusOK, star.ToStarReq())
@@ -77,7 +77,7 @@ func main() {
 
 	storeClient, err := starstore.NewStarClient(*storeGrpcUri)
 	if err != nil {
-		log.Fatalf("Failed to open gprc star due to %v", err)
+		log.Fatalf("failed to open gprc star due to %v", err)
 	}
 
 	r := gin.Default()

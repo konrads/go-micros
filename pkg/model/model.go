@@ -10,7 +10,7 @@ type StarReq struct {
 }
 
 type Star struct {
-	Id                string
+	ID                string
 	Name              string
 	Alias             []string
 	Constellation     string
@@ -33,7 +33,7 @@ func DefaultStarReq() *StarReq {
 
 func (s *StarReq) ToStar(id string) Star {
 	return Star{
-		Id:                id,
+		ID:                id,
 		Name:              s.Name,
 		Alias:             s.Alias,
 		Constellation:     s.Constellation,

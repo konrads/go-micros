@@ -16,7 +16,7 @@ func NewPostgresDB(connUri *string) *PostgresDB {
 	// eg: connUri = "postgres://gomicros:password@localhost/gomicros?sslmode=disable"
 	db, err := sql.Open("postgres", *connUri)
 	if err != nil {
-		log.Fatalf("Failed to connect to postgres on uri: %s", *connUri)
+		log.Fatalf("failed to connect to postgres on uri: %s", *connUri)
 	}
 	return &PostgresDB{db: db}
 }
@@ -34,11 +34,11 @@ func (db *PostgresDB) Get(id string) (*model.Star, error) {
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		log.Fatalf("Failed to unmarshall postgres row due to %v", err)
+		log.Fatalf("failed to unmarshall postgres row due to %v", err)
 		return nil, err
 	} else {
 		res := model.Star{
-			Id:                id,
+			ID:                id,
 			Name:              name.String,
 			Alias:             toStringArr(alias),
 			Constellation:     constellation.String,
@@ -55,7 +55,7 @@ func (db *PostgresDB) SaveAll(stars []model.Star) (int, error) {
 	for _, s := range stars {
 		res, err := db.db.Exec(
 			"INSERT INTO star (id, name, alias, constellation, coordinates, distance, apparentMagnitude) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(id) DO NOTHING",
-			s.Id, s.Name, pq.Array(s.Alias), s.Constellation, pq.Array(s.Coordinates), s.Distance, s.ApparentMagnitude,
+			s.ID, s.Name, pq.Array(s.Alias), s.Constellation, pq.Array(s.Coordinates), s.Distance, s.ApparentMagnitude,
 		)
 		if err != nil {
 			return 0, err

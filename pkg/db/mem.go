@@ -23,7 +23,7 @@ func (db *MemDB) Get(id string) (*model.Star, error) {
 
 func (db *MemDB) SaveAll(stars []model.Star) (int, error) {
 	for _, star := range stars {
-		db.stars[star.Id] = star
+		db.stars[star.ID] = star
 	}
 
 	return len(stars), nil

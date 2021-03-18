@@ -27,10 +27,10 @@ func main() {
 	case "postgres":
 		dbInst = db.NewPostgresDB(storeDbUri)
 	default:
-		log.Fatalf("Invalid db-type, choose betweem mem/postgres")
+		log.Fatalf("invalid db-type, choose betweem mem/postgres")
 	}
 	defer dbInst.Close()
 	if err := starstore.RunStarServer(*storeGrpcUri, &dbInst); err != nil {
-		log.Fatalf("Failed to Serve grpc on, err: %v", err)
+		log.Fatalf("failed to Serve grpc on, err: %v", err)
 	}
 }
