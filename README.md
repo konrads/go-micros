@@ -28,10 +28,9 @@ make run-local-mem-store &
 To run via docker-compose
 -------------------------
 ```
-docker system prune -f
-docker volume prune -f
+# do once only:
 make build-dockers
-docker-compose -f docker/docker-compose.yaml up
+make run-dockers
 ```
 
 To manual test
@@ -49,6 +48,5 @@ go test ./... -v
 
 TODOs
 -----
-* testing of microservices...?
-* fix marshaling of streamed REST to structs, currently done manually, ie. [StarReqFromJson() from model.go](pkg/model/model.go)
+* testing of microservices, via mocks...?
 * consider DB resultset marshalling to structs (ORM?), ie. [postgres.go](pkg/db/postgres.go)

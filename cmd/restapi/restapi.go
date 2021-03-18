@@ -1,12 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
 
-	"github.com/bcicen/jstream"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/konrads/go-micros/pkg/model"
 	"github.com/konrads/go-micros/pkg/starstore"
 )
@@ -20,14 +21,31 @@ func PostStars(starStore *starstore.StarStoreClientImpl) gin.HandlerFunc {
 			log.Fatalf("Failed to get star persistor due to %v", err)
 		}
 
-		decoder := jstream.NewDecoder(c.Request.Body, 1).EmitKV()
-		for mv := range decoder.Stream() {
-			kv := mv.Value.(jstream.KV)
-			asMap := kv.Value.(map[string]interface{})
-			asStarReq := model.StarReqFromJson(asMap)
-			asStar := asStarReq.ToStar(kv.Key)
-			processor(asStar)
-			log.Printf("Processed REST star: %v", asStar)
+		decoder := json.NewDecoder(c.Request.Body)
+		token, err := decoder.Token()
+		if err != nil {
+			log.Fatalf("Failed to tokenize json stream due to: %v", err)
+		}
+		if delim, ok := token.(json.Delim); !ok || delim != '{' {
+			log.Fatal("Failed to get `{`...")
+		}
+
+		validate := validator.New()
+		for decoder.More() {
+			token, err := decoder.Token()
+			k := token.(string)
+			v := model.DefaultStarReq()
+			err = decoder.Decode(&v)
+			if err != nil {
+				log.Fatalf("Failed to decode due to: %v", err)
+			}
+			err = validate.Struct(&v)
+			if err != nil {
+				log.Fatalf("Failed to validate due to: %v", err)
+			}
+			star := v.ToStar(k)
+			processor(star)
+			log.Printf("Processed REST star: %v", star)
 		}
 	}
 }

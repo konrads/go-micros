@@ -3,6 +3,11 @@ build-dockers:
 	docker build -f docker/store/Dockerfile -t gomicros.store .
 	docker build -f docker/postgres/Dockerfile -t gomicros.postgres docker/postgres
 
+run-dockers:
+	docker system prune -f
+	docker volume prune -f
+	docker-compose -f docker/docker-compose.yaml up
+
 run-local-restapi:
 	go run cmd/restapi/restapi.go -store-grpc-uri=localhost:9000
 
