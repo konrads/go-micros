@@ -13,6 +13,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	GET_TIMEOUT  = 10 * time.Second
+	POST_TIMEOUT = 100 * time.Second
+)
+
 func ToProtobuff(s *model.Star) *OptionalStarResp_Star {
 	return &OptionalStarResp_Star{
 		Id:                s.ID,
@@ -110,7 +115,7 @@ type cleanup func()
 
 func (ss *StarStoreClientImpl) GetStarPersistor() (processor, cleanup, error) {
 	client := NewStarStoreClient(ss.conn)
-	ctx, ctxCancel := context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, ctxCancel := context.WithTimeout(context.Background(), POST_TIMEOUT)
 	stream, err := client.PersistStars(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -129,7 +134,7 @@ func (ss *StarStoreClientImpl) GetStarPersistor() (processor, cleanup, error) {
 
 func (ss *StarStoreClientImpl) GetStar(id string) (*model.Star, error) {
 	client := NewStarStoreClient(ss.conn)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), GET_TIMEOUT)
 	defer cancel()
 	optProtoStar, err := client.GetStar(ctx, &StarReq{StarId: id})
 	if err != nil {
