@@ -12,22 +12,26 @@ func TestMemDB(t *testing.T) {
 	db := db.NewMemDB()
 	db.SaveAll([]model.Star{
 		{
-			ID:                "id1",
-			Name:              "name1",
-			Alias:             []string{"alias1"},
-			Constellation:     "constellation1",
-			Coordinates:       []float32{1.1, 1.2},
-			Distance:          1.1,
-			ApparentMagnitude: 11.11,
+			ID: "id1",
+			StarReq: &model.StarReq{
+				Name:              "name1",
+				Alias:             []string{"alias1"},
+				Constellation:     "constellation1",
+				Coordinates:       []float32{1.1, 1.2},
+				Distance:          1.1,
+				ApparentMagnitude: 11.11,
+			},
 		},
 		{
-			ID:                "id2",
-			Name:              "name2",
-			Alias:             []string{"alias2"},
-			Constellation:     "constellation2",
-			Coordinates:       []float32{2.1, 2.2},
-			Distance:          2.2,
-			ApparentMagnitude: 22.22,
+			ID: "id2",
+			StarReq: &model.StarReq{
+				Name:              "name2",
+				Alias:             []string{"alias2"},
+				Constellation:     "constellation2",
+				Coordinates:       []float32{2.1, 2.2},
+				Distance:          2.2,
+				ApparentMagnitude: 22.22,
+			},
 		},
 	})
 

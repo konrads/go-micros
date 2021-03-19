@@ -39,13 +39,15 @@ func (db *PostgresDB) Get(id string) (*model.Star, error) {
 		return nil, err
 	}
 	res := model.Star{
-		ID:                id,
-		Name:              name.String,
-		Alias:             toStringArr(alias),
-		Constellation:     constellation.String,
-		Coordinates:       toFloat32Arr(coordinates),
-		Distance:          float32(distance.Float64),
-		ApparentMagnitude: float32(apparentMagnitude.Float64),
+		ID: id,
+		StarReq: &model.StarReq{
+			Name:              name.String,
+			Alias:             toStringArr(alias),
+			Constellation:     constellation.String,
+			Coordinates:       toFloat32Arr(coordinates),
+			Distance:          float32(distance.Float64),
+			ApparentMagnitude: float32(apparentMagnitude.Float64),
+		},
 	}
 	return &res, nil
 }

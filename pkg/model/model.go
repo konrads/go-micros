@@ -10,13 +10,8 @@ type StarReq struct {
 }
 
 type Star struct {
-	ID                string
-	Name              string
-	Alias             []string
-	Constellation     string
-	Coordinates       []float32
-	Distance          float32
-	ApparentMagnitude float32
+	ID string
+	*StarReq
 }
 
 type Pong struct {
@@ -33,23 +28,11 @@ func DefaultStarReq() *StarReq {
 
 func (s *StarReq) ToStar(id string) Star {
 	return Star{
-		ID:                id,
-		Name:              s.Name,
-		Alias:             s.Alias,
-		Constellation:     s.Constellation,
-		Coordinates:       s.Coordinates,
-		Distance:          s.Distance,
-		ApparentMagnitude: s.ApparentMagnitude,
+		ID:      id,
+		StarReq: s,
 	}
 }
 
 func (s *Star) ToStarReq() StarReq {
-	return StarReq{
-		Name:              s.Name,
-		Alias:             s.Alias,
-		Constellation:     s.Constellation,
-		Coordinates:       s.Coordinates,
-		Distance:          s.Distance,
-		ApparentMagnitude: s.ApparentMagnitude,
-	}
+	return *s.StarReq
 }

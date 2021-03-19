@@ -32,13 +32,15 @@ func ToProtobuff(s *model.Star) *OptionalStarResp_Star {
 
 func (s *OptionalStarResp_Star) ToModel() *model.Star {
 	return &model.Star{
-		ID:                s.Id,
-		Name:              s.Name,
-		Alias:             s.Alias,
-		Constellation:     s.Constellation,
-		Coordinates:       s.Coordinates,
-		Distance:          s.Distance,
-		ApparentMagnitude: s.ApparentMagnitude,
+		ID: s.Id,
+		StarReq: &model.StarReq{
+			Name:              s.Name,
+			Alias:             s.Alias,
+			Constellation:     s.Constellation,
+			Coordinates:       s.Coordinates,
+			Distance:          s.Distance,
+			ApparentMagnitude: s.ApparentMagnitude,
+		},
 	}
 }
 
